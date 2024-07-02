@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.content.Intent;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +24,8 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
     private TextToSpeech tts;
     private DatabaseHelper db;
     private EntryAdapter adapter;
+    private int repeatCount = 1; // Default repeat count
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,7 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
 
         List<Entry> entries = db.getAllEntries();
         // Correctly set up the adapter with the TextToSpeech instance
-        adapter = new EntryAdapter(entries, tts);
+        adapter = new EntryAdapter(entries, tts, repeatCount);
         recyclerView.setAdapter(adapter);
 
         setupUI();
@@ -77,13 +83,23 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
         Button cancelButton = findViewById(R.id.cancel_button);
         Button saveButton = findViewById(R.id.save_button);
 
-
-        Button deleteButton = findViewById(R.id.delete_button);
+        Button lockButton = findViewById(R.id.lock_button);
+        lockButton.setOnClickListener(this::onLockButtonClick);
         Button repeatButton = findViewById(R.id.repeat_button);
         EditText repeatCountEditText = findViewById(R.id.repeat_count_edit_text);
-        deleteButton.setOnClickListener(v -> deleteSelectedEntry());
-        repeatButton.setOnClickListener(v -> repeatSelectedEntry(repeatCountEditText));
+        LinearLayout repeatCountLayout = findViewById(R.id.linearLayout_repeatCount);
 
+        repeatButton.setOnClickListener(v -> {
+            // Toggle visibility of the entire layout, not just the EditText
+            if (repeatCountLayout.getVisibility() == View.GONE) {
+                repeatCountLayout.setVisibility(View.VISIBLE);
+            } else {
+                repeatCountLayout.setVisibility(View.GONE);
+            }
+        });
+
+        Button deleteButton = findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(v -> deleteSelectedEntry());
 
         createVoiceButton.setOnClickListener(v -> toggleInputFields(titleEditText, textEditText, buttonsLinearLayout));
 
@@ -104,7 +120,36 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
             clearAndHideInputFields(titleEditText, textEditText, buttonsLinearLayout);
         }
     }
+    public void onLockButtonClick(View view) {
+        updateRepeatCount(); // This method already updates the adapter's repeat count based on the textbox
+    }
+    public void updateRepeatCount() {
+        EditText repeatCountEditText = findViewById(R.id.repeat_count_edit_text);
+        try {
+            int newRepeatCount = Integer.parseInt(repeatCountEditText.getText().toString());
+            adapter.setRepeatCount(newRepeatCount);
+        } catch (NumberFormatException e) {
+            // Handle invalid input or set a default value
+            adapter.setRepeatCount(1); // Default to 1 or consider showing an error message
+        }
+    }
+    public void onConfirmRepeatCountButtonClick(View view) {
+        EditText repeatCountEditText = findViewById(R.id.repeat_count_edit_text);
+        try {
+            int newRepeatCount = Integer.parseInt(repeatCountEditText.getText().toString());
+            EntryAdapter adapter = (EntryAdapter) ((RecyclerView) findViewById(R.id.item_list_recyclerview)).getAdapter();
+            if (adapter != null) {
+                adapter.setRepeatCount(newRepeatCount);
+                Toast.makeText(this, "Repeat count set to " + newRepeatCount, Toast.LENGTH_SHORT).show();
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid repeat count", Toast.LENGTH_SHORT).show();
+        }
 
+        // Close the keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     private void saveEntry(EditText titleEditText, EditText textEditText) {
         String title = titleEditText.getText().toString();
         String text = textEditText.getText().toString();

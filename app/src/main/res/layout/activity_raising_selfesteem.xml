@@ -16,13 +16,35 @@
             android:background="?attr/colorPrimary" />
 
     </RelativeLayout>
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        android:layout_marginTop="16dp"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
 
+        <Button
+            android:id="@+id/create_voice_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Create Voice" />
+
+        <Button
+            android:id="@+id/repeat_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Repeat"
+            android:layout_marginStart="8dp"/>
+
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delete"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
     <Button
         android:id="@+id/lock_button"
         android:layout_width="wrap_content"
@@ -30,27 +52,28 @@
         android:text="Lock"
         android:layout_marginTop="16dp"
         android:visibility="gone"/>
-    <Button
-        android:id="@+id/repeat_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Repeat"
-        android:layout_marginTop="16dp"/>
-    <EditText
-        android:id="@+id/repeat_count_edit_text"
+    <LinearLayout
+        android:id="@+id/linearLayout_repeatCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter repeat count"
-        android:inputType="number"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"/>
-    <Button
-        android:id="@+id/create_voice_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:insetLeft="10dp"
-        android:text="Create Voice" />
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/repeat_count_edit_text"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/confirm_repeat_count_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:onClick="onConfirmRepeatCountButtonClick"/>
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/title_edit_text"
