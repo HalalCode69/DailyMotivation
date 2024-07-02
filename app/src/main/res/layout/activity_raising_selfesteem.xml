@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#98B3E0">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,8 +16,34 @@
             android:background="?attr/colorPrimary" />
 
     </RelativeLayout>
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_marginTop="16dp"/>
 
-
+    <Button
+        android:id="@+id/lock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lock"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+    <Button
+        android:id="@+id/repeat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repeat"
+        android:layout_marginTop="16dp"/>
+    <EditText
+        android:id="@+id/repeat_count_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter repeat count"
+        android:inputType="number"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
     <Button
         android:id="@+id/create_voice_button"
         android:layout_width="wrap_content"
@@ -68,5 +95,5 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="500dp" />
 </LinearLayout>
