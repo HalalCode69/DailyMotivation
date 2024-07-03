@@ -82,7 +82,20 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
         EditText textEditText = findViewById(R.id.text_edit_text);
         Button cancelButton = findViewById(R.id.cancel_button);
         Button saveButton = findViewById(R.id.save_button);
+        // Save Button Listener - Corrected to remove duplicate
+        saveButton.setOnClickListener(v -> {
+            saveEntry(titleEditText, textEditText); // Save the entry
+            hideKeyboard(); // Hide the keyboard
+            toggleInputFields(titleEditText, textEditText, buttonsLinearLayout); // Toggle visibility of input fields
+            titleEditText.setText(""); // Clear the title field
+            textEditText.setText(""); // Clear the text field
+        });
 
+        // Cancel Button Listener - Corrected to remove duplicate
+        cancelButton.setOnClickListener(v -> {
+            hideKeyboard(); // Hide the keyboard
+            clearAndHideInputFields(titleEditText, textEditText, buttonsLinearLayout); // Clear and hide input fields
+        });
         Button lockButton = findViewById(R.id.lock_button);
         lockButton.setOnClickListener(this::onLockButtonClick);
         Button repeatButton = findViewById(R.id.repeat_button);
@@ -131,6 +144,12 @@ public class RaisingSelfEsteemActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             // Handle invalid input or set a default value
             adapter.setRepeatCount(1); // Default to 1 or consider showing an error message
+        }
+    }private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
     public void onConfirmRepeatCountButtonClick(View view) {
